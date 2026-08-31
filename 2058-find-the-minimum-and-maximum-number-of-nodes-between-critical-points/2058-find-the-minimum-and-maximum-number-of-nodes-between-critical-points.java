@@ -10,29 +10,39 @@
  */
 class Solution {
     public int[] nodesBetweenCriticalPoints(ListNode head) {
-        int[] ans = new int[2];
-        int prev = head.val;
-        head = head.next;
-        ArrayList<Integer> list = new ArrayList<>(); 
-        int ptr = 1;
-        while(head.next != null){
-            if((head.val > prev && head.val > head.next.val) || (head.val < prev && head.val < head.next.val)){
-                list.add(ptr);
+        int[] arr = new int[] { -1, -1 };
+        ListNode prev = head;
+        ListNode cur = head.next;
+        ListNode nextt = cur.next;
+        int lc = -1;
+        int first = -1;
+        int dist = 0;
+        int count = 0;
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+
+        while (cur.next != null) {
+            dist++;
+            if ((prev.val > cur.val && nextt.val > cur.val) || (prev.val < cur.val && nextt.val < cur.val)) {
+                if (lc != -1) {
+                    min = Math.min(min, dist - lc);
+                }
+                else{
+                    first =  dist;
+                }
+                lc = dist;
+                count++;
             }
-            prev = head.val;
-            head = head.next;
-            ptr++;
 
+            prev = prev.next;
+            cur = cur.next;
+            nextt = nextt.next;
         }
-        if(list.size() < 2){
-            return new int[]{-1,-1};
+        if (count > 1) {
+            arr[0] = min;
+            arr[1] = lc - first;
         }
-        ans[0] = Integer.MAX_VALUE;
-        for(int i = 0; i < list.size()-1; i++){
-            ans[0] = Math.min(ans[0], list.get(i+1) - list.get(i));
-        }
-        ans[1] = list.get(list.size()-1) - list.get(0);
 
-        return ans;
+        return arr;
     }
 }
